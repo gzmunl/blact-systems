@@ -584,6 +584,13 @@
 
     // Title animation is triggered by loading screen block below
 
+    // --- Mobile: move engrave-wrap to hero-inner ---
+    if (window.innerWidth <= 768) {
+      const ew = document.querySelector('.hero-visual .engrave-wrap');
+      const hi = document.querySelector('.hero-inner');
+      if (ew && hi) hi.appendChild(ew);
+    }
+
     // --- Smooth Cursor Glow with lerp ---
     const cursorGlow = document.getElementById('cursorGlow');
     const heroReveal = document.getElementById('heroReveal');
@@ -1196,8 +1203,10 @@
 
       // Master animation frame
       function masterScrollLoop() {
+        // Hero animations run on ALL screen sizes
+        updateHero();
+
         if (window.innerWidth > 768) {
-          updateHero();
           updateAbout();
           updateDividers();
           updateSectionParallax();
@@ -1206,6 +1215,26 @@
           updateNews();
           updateContact();
           updateTitles();
+        } else {
+          // Mobile: lock sections after content scrolled
+          var vh = viewH();
+          var _newsSection = document.getElementById('haberler');
+
+          function mobileLock(wrapper, section) {
+            if (!wrapper || !section) return;
+            var wRect = wrapper.getBoundingClientRect();
+            var sH = section.offsetHeight;
+            var naturalBottom = wRect.top + sH;
+            if (naturalBottom < vh && wRect.bottom > 0) {
+              section.style.setProperty('transform', 'translateY(' + (vh - naturalBottom) + 'px)', 'important');
+            } else {
+              section.style.setProperty('transform', 'none', 'important');
+            }
+          }
+
+          mobileLock(solutionsWrapper, solutionsSection);
+          mobileLock(blogWrapperEl, blogSection);
+          mobileLock(newsWrapperEl, _newsSection);
         }
         requestAnimationFrame(masterScrollLoop);
       }
