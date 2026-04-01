@@ -2076,7 +2076,8 @@ img { max-width: 100%; height: auto; display: block; }
   }
   .nav-links.open { display: flex; }
   .nav-links > li { text-align: center; width: 100%; }
-  .nav-links > li > a { font-size: 0.95rem; letter-spacing: 2px; }
+  .nav-links > li > a { font-size: 0.95rem; letter-spacing: 2px; color: #fff !important; }
+  .nav-links .dropdown-menu a { color: rgba(255,255,255,0.6) !important; }
   .nav-toggle { display: flex; z-index: 1001; }
   .lang-toggle { display: none; }
   .cursor-glow { display: none; }
@@ -2381,6 +2382,8 @@ img { max-width: 100%; height: auto; display: block; }
   }
   .navbar.navbar-light .logo { color: #111 !important; }
   .navbar.navbar-light .nav-toggle span { background: #111 !important; }
+  /* X ikonu her zaman beyaz (menü açıkken overlay üstünde) */
+  .nav-toggle.open span { background: #fff !important; }
 
   /* Menü açıkken X ikonu */
   .nav-toggle.open span:nth-child(1) {
