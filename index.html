@@ -1764,6 +1764,7 @@
 
     // --- SLM Spark Animation: all section titles (except hero) ---
     (function() {
+      if (window.innerWidth <= 768) return; // Mobilde kıvılcım efekti yok
       // Step 1: Immediately split ALL target titles into hidden letters
       // so the raw text is never visible
       const targets = [
