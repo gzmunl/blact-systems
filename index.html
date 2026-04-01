@@ -702,7 +702,7 @@
     // Mobile dropdown toggle
     document.querySelectorAll('.nav-dropdown > a').forEach(function(a) {
       a.addEventListener('click', function(e) {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 1024) {
           e.preventDefault();
           a.parentElement.classList.toggle('dropdown-open');
         }
@@ -754,8 +754,8 @@
           if (_scrollAnimId) { cancelAnimationFrame(_scrollAnimId); _scrollAnimId = null; }
           document.documentElement.style.scrollBehavior = 'auto';
 
-          if (window.innerWidth <= 768) {
-            // --- MOBİL: overlay + reset + scroll ---
+          if (window.innerWidth <= 1024) {
+            // --- MOBİL/TABLET: overlay + reset + scroll ---
             var _mobileWrapper = wrapper;
             var _mobileHash = hash;
             _navOverlay.style.opacity = '1';
@@ -1343,7 +1343,7 @@
         // Hero animations run on ALL screen sizes
         updateHero();
 
-        if (window.innerWidth > 768) {
+        if (window.innerWidth > 1024) {
           updateAbout();
           updateDividers();
           updateSectionParallax();
@@ -1885,7 +1885,7 @@
 
     // --- SLM Spark Animation: all section titles (except hero) ---
     (function() {
-      if (window.innerWidth <= 768) return; // Mobilde kıvılcım efekti yok
+      if (window.innerWidth <= 1024) return; // Mobil/tablette kıvılcım efekti yok
       // Step 1: Immediately split ALL target titles into hidden letters
       // so the raw text is never visible
       const targets = [
