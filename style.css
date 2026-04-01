@@ -1690,6 +1690,18 @@ img { max-width: 100%; height: auto; display: block; }
 .footer-bottom-links a:hover {
   color: var(--accent);
 }
+.footer-credit {
+  display: flex;
+  align-items: center;
+}
+.footer-credit-logo {
+  height: 22px;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+.footer-credit-logo:hover {
+  opacity: 1;
+}
 
 @media (max-width: 768px) {
   .footer-hero { flex-direction: column; align-items: flex-start; padding: 3rem 0 2rem; }
