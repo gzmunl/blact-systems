@@ -2168,7 +2168,7 @@ img { max-width: 100%; height: auto; display: block; }
     z-index: 2 !important;
     margin-top: 0 !important;
     padding-top: 0 !important;
-    padding-bottom: 30vh !important;
+    padding-bottom: 60vh !important;
     width: 100% !important;
     overflow: visible !important;
   }
