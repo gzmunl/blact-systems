@@ -708,7 +708,11 @@
         }
       });
     });
-    navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', () => { navLinks.classList.remove('open'); navToggle.classList.remove('open'); }));
+    navLinks.querySelectorAll('a').forEach(l => l.addEventListener('click', function() {
+      // Dropdown parent'a tıklayınca menüyü kapatma — sadece dropdown açılsın
+      if (window.innerWidth <= 1024 && this.parentElement && this.parentElement.classList.contains('nav-dropdown')) return;
+      navLinks.classList.remove('open'); navToggle.classList.remove('open');
+    }));
 
     // Smooth scroll: wrapper'ın animasyonlar tamamlanmış noktasına git
     const sectionNavConfig = {
@@ -746,6 +750,8 @@
       link.addEventListener('click', function(e) {
         var hash = this.getAttribute('href').replace('#', '');
         if (!hash || !sectionNavConfig[hash]) return;
+        // Mobil/tablet: dropdown parent link'e tıklayınca scroll yapma, dropdown açılsın
+        if (window.innerWidth <= 1024 && this.parentElement && this.parentElement.classList.contains('nav-dropdown')) { e.preventDefault(); return; }
         var config = sectionNavConfig[hash];
         var wrapper = document.getElementById(config.wrapper);
         if (wrapper) {
