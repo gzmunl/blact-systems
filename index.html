@@ -735,6 +735,22 @@
       const newsItems = document.querySelectorAll('.news-item');
       const viewH = () => window.innerHeight;
 
+      // Mobile sticky header state
+      const _solHeader = document.querySelector('.solutions-header');
+      const _solHeaderParent = _solHeader ? _solHeader.parentNode : null;
+      const _solHeaderNext = _solHeader ? _solHeader.nextElementSibling : null;
+      let _solHeaderFixed = false, _solSpacer = null;
+
+      const _blogHeader = document.querySelector('.blog-header');
+      const _blogHeaderParent = _blogHeader ? _blogHeader.parentNode : null;
+      const _blogHeaderNext = _blogHeader ? _blogHeader.nextElementSibling : null;
+      let _blogHeaderFixed = false, _blogSpacer = null;
+
+      const _newsHeader = document.querySelector('.news-header');
+      const _newsHeaderParent = _newsHeader ? _newsHeader.parentNode : null;
+      const _newsHeaderNext = _newsHeader ? _newsHeader.nextElementSibling : null;
+      let _newsHeaderFixed = false, _newsSpacer = null;
+
       // Helper: how far element is through viewport (0 = bottom edge, 1 = top edge)
       function scrollProgress(el) {
         const rect = el.getBoundingClientRect();
@@ -1232,9 +1248,128 @@
             }
           }
 
+          // About: sabit kal, solutions üstüne gelsin
+          if (aboutWrapper && aboutSection) {
+            var aRect = aboutWrapper.getBoundingClientRect();
+            if (aRect.top <= 0) {
+              aboutSection.style.setProperty('position', 'fixed', 'important');
+              aboutSection.style.setProperty('top', '0', 'important');
+              aboutSection.style.setProperty('left', '0', 'important');
+              aboutSection.style.setProperty('width', '100%', 'important');
+              aboutSection.style.setProperty('z-index', '2', 'important');
+            } else {
+              aboutSection.style.setProperty('position', 'relative', 'important');
+              aboutSection.style.removeProperty('top');
+              aboutSection.style.removeProperty('left');
+            }
+          }
+
           mobileLock(solutionsWrapper, solutionsSection);
           mobileLock(blogWrapperEl, blogSection);
           mobileLock(newsWrapperEl, _newsSection);
+
+          // Solutions header → body'ye taşı (blog gelmeden önce)
+          if (_solHeader && solutionsWrapper) {
+            var _sw = solutionsWrapper.getBoundingClientRect();
+            var _blogNotYet = blogWrapperEl ? blogWrapperEl.getBoundingClientRect().top > 0 : true;
+            if (_sw.top <= 0 && _sw.bottom > 0 && _blogNotYet && !_solHeaderFixed) {
+              _solSpacer = document.createElement('div');
+              _solSpacer.style.height = _solHeader.offsetHeight + 'px';
+              _solHeaderParent.insertBefore(_solSpacer, _solHeaderNext);
+              _solHeader.classList.add('mobile-fixed');
+              document.body.appendChild(_solHeader);
+              _solHeaderFixed = true;
+            } else if ((_sw.top > 0 || _sw.bottom <= 0) && _solHeaderFixed) {
+              _solHeader.classList.remove('mobile-fixed');
+              if (_solSpacer && _solSpacer.parentNode) {
+                _solHeaderParent.insertBefore(_solHeader, _solSpacer);
+                _solSpacer.remove();
+              }
+              _solHeaderFixed = false;
+            }
+          }
+
+          // Blog geldiğinde solutions header'ı kaldır
+          if (_solHeaderFixed && blogWrapperEl) {
+            var _bwCheck = blogWrapperEl.getBoundingClientRect();
+            if (_bwCheck.top <= 0) {
+              _solHeader.classList.remove('mobile-fixed');
+              if (_solSpacer && _solSpacer.parentNode) {
+                _solHeaderParent.insertBefore(_solHeader, _solSpacer);
+                _solSpacer.remove();
+              }
+              _solHeaderFixed = false;
+            }
+          }
+
+          // News geldiğinde blog header'ı kaldır
+          if (_blogHeaderFixed && newsWrapperEl) {
+            var _nwCheck = newsWrapperEl.getBoundingClientRect();
+            if (_nwCheck.top <= 0) {
+              _blogHeader.classList.remove('mobile-fixed');
+              if (_blogSpacer && _blogSpacer.parentNode) {
+                _blogHeaderParent.insertBefore(_blogHeader, _blogSpacer);
+                _blogSpacer.remove();
+              }
+              _blogHeaderFixed = false;
+            }
+          }
+
+          // Blog header → body'ye taşı (news gelmeden önce)
+          if (_blogHeader && blogWrapperEl) {
+            var _bw = blogWrapperEl.getBoundingClientRect();
+            var _newsNotYet = newsWrapperEl ? newsWrapperEl.getBoundingClientRect().top > 0 : true;
+            if (_bw.top <= 0 && _bw.bottom > 0 && _newsNotYet && !_blogHeaderFixed) {
+              _blogSpacer = document.createElement('div');
+              _blogSpacer.style.height = _blogHeader.offsetHeight + 'px';
+              _blogHeaderParent.insertBefore(_blogSpacer, _blogHeaderNext);
+              _blogHeader.classList.add('mobile-fixed');
+              document.body.appendChild(_blogHeader);
+              _blogHeaderFixed = true;
+            } else if ((_bw.top > 0 || _bw.bottom <= 0) && _blogHeaderFixed) {
+              _blogHeader.classList.remove('mobile-fixed');
+              if (_blogSpacer && _blogSpacer.parentNode) {
+                _blogHeaderParent.insertBefore(_blogHeader, _blogSpacer);
+                _blogSpacer.remove();
+              }
+              _blogHeaderFixed = false;
+            }
+          }
+
+          // Contact geldiğinde news header'ı kaldır
+          var contactWrapperEl = document.querySelector('.contact-wrapper');
+          if (_newsHeaderFixed && contactWrapperEl) {
+            var _cwCheck = contactWrapperEl.getBoundingClientRect();
+            if (_cwCheck.top <= 0) {
+              _newsHeader.classList.remove('mobile-fixed');
+              if (_newsSpacer && _newsSpacer.parentNode) {
+                _newsHeaderParent.insertBefore(_newsHeader, _newsSpacer);
+                _newsSpacer.remove();
+              }
+              _newsHeaderFixed = false;
+            }
+          }
+
+          // News header → body'ye taşı (contact gelmeden önce)
+          if (_newsHeader && newsWrapperEl) {
+            var _nw = newsWrapperEl.getBoundingClientRect();
+            var _contactNotYet = contactWrapperEl ? contactWrapperEl.getBoundingClientRect().top > 0 : true;
+            if (_nw.top <= 0 && _nw.bottom > 0 && _contactNotYet && !_newsHeaderFixed) {
+              _newsSpacer = document.createElement('div');
+              _newsSpacer.style.height = _newsHeader.offsetHeight + 'px';
+              _newsHeaderParent.insertBefore(_newsSpacer, _newsHeaderNext);
+              _newsHeader.classList.add('mobile-fixed');
+              document.body.appendChild(_newsHeader);
+              _newsHeaderFixed = true;
+            } else if ((_nw.top > 0 || _nw.bottom <= 0) && _newsHeaderFixed) {
+              _newsHeader.classList.remove('mobile-fixed');
+              if (_newsSpacer && _newsSpacer.parentNode) {
+                _newsHeaderParent.insertBefore(_newsHeader, _newsSpacer);
+                _newsSpacer.remove();
+              }
+              _newsHeaderFixed = false;
+            }
+          }
         }
         requestAnimationFrame(masterScrollLoop);
       }
