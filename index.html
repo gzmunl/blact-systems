@@ -753,24 +753,70 @@
           // Önceki scroll'u hemen durdur
           if (_scrollAnimId) { cancelAnimationFrame(_scrollAnimId); _scrollAnimId = null; }
           document.documentElement.style.scrollBehavior = 'auto';
-          // 1. Fade to black
-          _navOverlay.style.opacity = '1';
-          _navOverlay.style.pointerEvents = 'all';
-          // Wrapper pozisyonunu ŞİMDİ hesapla (scroll durmuşken)
-          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-          var wrapperAbsTop = wrapper.offsetTop;
-          var wrapperHeight = wrapper.offsetHeight;
-          setTimeout(function() {
-            // 2. Anında atla
-            window.scrollTo(0, wrapperAbsTop);
-            // 3. Fade back + animasyonları oynat
+
+          if (window.innerWidth <= 768) {
+            // --- MOBİL: overlay + reset + scroll ---
+            var _mobileWrapper = wrapper;
+            var _mobileHash = hash;
+            _navOverlay.style.opacity = '1';
+            _navOverlay.style.pointerEvents = 'all';
+            window.__mobileNavPaused = true;
             setTimeout(function() {
-              _navOverlay.style.opacity = '0';
-              _navOverlay.style.pointerEvents = 'none';
-              var targetScroll = wrapperAbsTop + (wrapperHeight * config.offset);
-              slowScrollTo(targetScroll, 2500);
-            }, 100);
-          }, 200);
+              // About fixed ve tüm transform'ları kaldır
+              ['hakkimizda','cozumlerimiz','blog','haberler'].forEach(function(id) {
+                var s = document.getElementById(id);
+                if (s) {
+                  s.style.transform = 'none';
+                  s.style.setProperty('position', 'relative', 'important');
+                  s.style.removeProperty('top');
+                  s.style.removeProperty('left');
+                }
+              });
+              window.scrollTo(0, 0);
+              requestAnimationFrame(function() {
+                requestAnimationFrame(function() {
+                  var targetY = _mobileWrapper.getBoundingClientRect().top + 10;
+                  if (_mobileHash === 'iletisim') {
+                    var _label = _mobileWrapper.querySelector('.section-label');
+                    if (_label) {
+                      var el = _label, off = 0;
+                      while (el && el !== _mobileWrapper) { off += el.offsetTop; el = el.offsetParent; }
+                      targetY = _mobileWrapper.getBoundingClientRect().top + off - 60;
+                    }
+                  }
+                  window.__mobileNavPaused = false;
+                  window.scrollTo(0, targetY);
+                  requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                      var correction = _mobileWrapper.getBoundingClientRect().top;
+                      if (_mobileHash === 'iletisim') {
+                        var _label2 = _mobileWrapper.querySelector('.section-label');
+                        if (_label2) correction = _label2.getBoundingClientRect().top - 60;
+                      }
+                      if (Math.abs(correction) > 5) window.scrollTo(0, window.scrollY + correction);
+                      _navOverlay.style.opacity = '0';
+                      _navOverlay.style.pointerEvents = 'none';
+                    });
+                  });
+                });
+              });
+            }, 200);
+          } else {
+            // --- DESKTOP: fade overlay + anında jump + yavaş scroll ---
+            _navOverlay.style.opacity = '1';
+            _navOverlay.style.pointerEvents = 'all';
+            var wrapperAbsTop = wrapper.offsetTop;
+            var wrapperHeight = wrapper.offsetHeight;
+            setTimeout(function() {
+              window.scrollTo(0, wrapperAbsTop);
+              setTimeout(function() {
+                _navOverlay.style.opacity = '0';
+                _navOverlay.style.pointerEvents = 'none';
+                var targetScroll = wrapperAbsTop + (wrapperHeight * config.offset);
+                slowScrollTo(targetScroll, 2500);
+              }, 100);
+            }, 200);
+          }
         }
       });
     });
@@ -1293,6 +1339,7 @@
 
       // Master animation frame
       function masterScrollLoop() {
+        if (window.__mobileNavPaused) { requestAnimationFrame(masterScrollLoop); return; }
         // Hero animations run on ALL screen sizes
         updateHero();
 
@@ -1310,37 +1357,46 @@
           var vh = viewH();
           var _newsSection = document.getElementById('haberler');
 
+          // mobileLock: section'ı viewport'un altına kilitle
           function mobileLock(wrapper, section) {
             if (!wrapper || !section) return;
             var wRect = wrapper.getBoundingClientRect();
-            var sH = section.offsetHeight;
+            var sH = section._cH || (section._cH = section.offsetHeight);
             var naturalBottom = wRect.top + sH;
+            var newY = 0;
             if (naturalBottom < vh && wRect.bottom > 0) {
-              section.style.setProperty('transform', 'translateY(' + (vh - naturalBottom) + 'px)', 'important');
-            } else {
-              section.style.setProperty('transform', 'none', 'important');
+              newY = Math.round(vh - naturalBottom);
+            }
+            if (section._lastY !== newY) {
+              section._lastY = newY;
+              section.style.transform = 'translate3d(0,' + newY + 'px,0)';
             }
           }
 
           // About: sabit kal, solutions üstüne gelsin
           if (aboutWrapper && aboutSection) {
             var aRect = aboutWrapper.getBoundingClientRect();
-            if (aRect.top <= 0) {
-              aboutSection.style.setProperty('position', 'fixed', 'important');
-              aboutSection.style.setProperty('top', '0', 'important');
-              aboutSection.style.setProperty('left', '0', 'important');
-              aboutSection.style.setProperty('width', '100%', 'important');
-              aboutSection.style.setProperty('z-index', '2', 'important');
-            } else {
-              aboutSection.style.setProperty('position', 'relative', 'important');
-              aboutSection.style.removeProperty('top');
-              aboutSection.style.removeProperty('left');
+            var shouldFix = aRect.top <= 0;
+            if (shouldFix !== aboutSection._wasFixed) {
+              aboutSection._wasFixed = shouldFix;
+              if (shouldFix) {
+                aboutSection.style.setProperty('position', 'fixed', 'important');
+                aboutSection.style.setProperty('top', '0', 'important');
+                aboutSection.style.setProperty('left', '0', 'important');
+                aboutSection.style.setProperty('width', '100%', 'important');
+                aboutSection.style.setProperty('z-index', '2', 'important');
+              } else {
+                aboutSection.style.setProperty('position', 'relative', 'important');
+                aboutSection.style.removeProperty('top');
+                aboutSection.style.removeProperty('left');
+              }
             }
           }
 
           mobileLock(solutionsWrapper, solutionsSection);
           mobileLock(blogWrapperEl, blogSection);
           mobileLock(newsWrapperEl, _newsSection);
+
 
           // Solutions header → body'ye taşı (blog gelmeden önce)
           if (_solHeader && solutionsWrapper) {
