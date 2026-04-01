@@ -264,7 +264,7 @@ img { max-width: 100%; height: auto; display: block; }
   height: 100vh;
   display: flex; align-items: center;
   overflow: hidden;
-  background: url('bg2.png') center center / cover no-repeat;
+  background: url('../images/bg2.png') center center / cover no-repeat;
   background-color: #050507;
 }
 .hero::before {
@@ -595,7 +595,7 @@ img { max-width: 100%; height: auto; display: block; }
 .about-bg-img {
   position: absolute;
   inset: -20px;
-  background: url('about-bg.png') center center / cover no-repeat;
+  background: url('../images/about-bg.png') center center / cover no-repeat;
   will-change: transform;
   z-index: 0;
   filter: saturate(0.2) brightness(1.1);
@@ -683,7 +683,7 @@ img { max-width: 100%; height: auto; display: block; }
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: url('solutions-bg.png?v=2') center center / cover no-repeat;
+  background: url('../images/solutions-bg.png?v=2') center center / cover no-repeat;
   background-color: #050507;
   padding: 0;
   z-index: 10;
@@ -1115,7 +1115,7 @@ img { max-width: 100%; height: auto; display: block; }
 .news-bg-img {
   position: absolute;
   inset: 0;
-  background: url('news-bg.png') center center / cover no-repeat;
+  background: url('../images/news-bg.png') center center / cover no-repeat;
   opacity: 0.25;
   filter: saturate(0.3);
   z-index: 0;
@@ -1304,7 +1304,7 @@ img { max-width: 100%; height: auto; display: block; }
   position: relative;
   border: 1px solid #111;
   overflow: hidden;
-  background: url('newsletter-visual.png') center center / cover no-repeat;
+  background: url('../images/newsletter-visual.png') center center / cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1542,7 +1542,7 @@ img { max-width: 100%; height: auto; display: block; }
 .footer-bg-img {
   position: absolute;
   inset: 0;
-  background: url('footer-bg.png') center center / cover no-repeat;
+  background: url('../images/footer-bg.png') center center / cover no-repeat;
   opacity: 0.08;
   filter: saturate(0);
   z-index: 0;
@@ -2564,7 +2564,7 @@ img { max-width: 100%; height: auto; display: block; }
     margin-left: -100px !important;
     width: 200px !important;
     height: auto !important;
-    background: url('hero-laser-mobile.png') top center / 100% 100% no-repeat !important;
+    background: url('../images/hero-laser-mobile.png') top center / 100% 100% no-repeat !important;
     opacity: 0.5 !important;
     z-index: 10 !important;
     pointer-events: none !important;
@@ -2807,7 +2807,7 @@ img { max-width: 100%; height: auto; display: block; }
   .newsletter-inner {
     flex-direction: column;
     text-align: center;
-    background: url('newsletter-visual.png') center center / cover no-repeat !important;
+    background: url('../images/newsletter-visual.png') center center / cover no-repeat !important;
     border-radius: 0 !important;
     border: 1px solid #111 !important;
     width: 100%;
