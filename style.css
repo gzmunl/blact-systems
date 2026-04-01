@@ -584,7 +584,7 @@ img { max-width: 100%; height: auto; display: block; }
 /* ==================== ABOUT ==================== */
 .about-wrapper {
   position: relative;
-  height: 350vh;
+  height: 500vh;
   z-index: 2;
   margin-top: -100vh;
 }
